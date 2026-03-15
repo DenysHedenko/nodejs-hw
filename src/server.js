@@ -6,6 +6,7 @@ import pino from 'pino-http';
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
+//? ==========================================================
 // Middleware для парсингу JSON
 app.use(express.json());
 
@@ -30,6 +31,7 @@ app.use(
   }),
 );
 
+//* ==========================================================
 // Маршрут, який повертає всі нотатки
 app.get('/notes', (req, res) => {
   res.status(200).json({
@@ -39,9 +41,9 @@ app.get('/notes', (req, res) => {
 
 // Маршрут, який повертає одну нотатку за її ідентифікатором
 app.get('/notes/:noteId', (req, res) => {
-  const userId = Number(req.params.userId);
+  const noteId = req.params.noteId;
   res.status(200).json({
-    message: `Retrieved note with ID: ${userId}`,
+    message: `Retrieved note with ID: ${noteId}`,
   });
 });
 
@@ -57,6 +59,7 @@ app.use((req, res) => {
   });
 });
 
+//! ==========================================================
 // Middleware для обробки помилок
 app.use((err, req, res, next) => {
   console.error(err);
