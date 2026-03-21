@@ -1,10 +1,11 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import { errorHandler } from './middleware/errorHandler';
-import { logger } from './middleware/logger';
-import { notFoundHandler } from './middleware/notFoundHandler';
-import { connectMongoDB } from './db/connectMongoDB';
+import { errorHandler } from './middleware/errorHandler.js';
+import { logger } from './middleware/logger.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
+import { connectMongoDB } from './db/connectMongoDB.js';
+import notesRoutes from './routes/notesRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -20,20 +21,8 @@ app.use(express.json());
 app.use(cors());
 
 //* ==========================================================
-// Маршрут, який повертає всі нотатки
-app.get('/notes', (req, res) => {
-  res.status(200).json({
-    message: 'Retrieved all notes',
-  });
-});
-
-// Маршрут, який повертає одну нотатку за її ідентифікатором
-app.get('/notes/:noteId', (req, res) => {
-  const noteId = req.params.noteId;
-  res.status(200).json({
-    message: `Retrieved note with ID: ${noteId}`,
-  });
-});
+// Add groupe of note's routes
+app.use(notesRoutes);
 
 // Middleware 404 для неіснуючих маршрутів
 app.use(notFoundHandler);
