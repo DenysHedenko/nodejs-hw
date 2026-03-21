@@ -1,35 +1,23 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import pino from 'pino-http';
+import { errorHandler } from './middleware/errorHandler';
+import { logger } from './middleware/logger';
+import { notFoundHandler } from './middleware/notFoundHandler';
+import { connectMongoDB } from './db/connectMongoDB';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 //? ==========================================================
+// Middleware для логування
+app.use(logger);
+
 // Middleware для парсингу JSON
 app.use(express.json());
 
 // Middleware яка дозволяє робити запити з інших доменів
 app.use(cors());
-
-// Middleware для логування
-app.use(
-  pino({
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'HH:MM:ss',
-        ignore: 'pid,hostname',
-        messageFormat:
-          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideObject: true,
-      },
-    },
-  }),
-);
 
 //* ==========================================================
 // Маршрут, який повертає всі нотатки
@@ -47,31 +35,14 @@ app.get('/notes/:noteId', (req, res) => {
   });
 });
 
-// Маршрут для тестування Middleware помилки
-app.get('/test-error', (req, res) => {
-  throw new Error('Something went wrong');
-});
-
 // Middleware 404 для неіснуючих маршрутів
-app.use((req, res) => {
-  res.status(404).json({
-    message: 'Route not found',
-  });
-});
+app.use(notFoundHandler);
 
 //! ==========================================================
 // Middleware для обробки помилок
-app.use((err, req, res, next) => {
-  console.error(err);
+app.use(errorHandler);
 
-  const isProd = process.env.NODE_ENV === 'production';
-
-  res.status(500).json({
-    message: isProd
-      ? 'Something went wrong. Please try again later.'
-      : err.message,
-  });
-});
+await connectMongoDB();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
