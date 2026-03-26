@@ -6,6 +6,7 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { connectMongoDB } from './db/connectMongoDB.js';
 import notesRoutes from './routes/notesRoutes.js';
+import { errors } from 'celebrate';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -28,6 +29,9 @@ app.use(notesRoutes);
 app.use(notFoundHandler);
 
 //! ==========================================================
+//Middleware for errors from celebrate (validation)
+app.use(errors());
+
 // Middleware для обробки помилок
 app.use(errorHandler);
 
