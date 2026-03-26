@@ -1,5 +1,3 @@
-// Model-Schema for one Note
-
 import { Schema, model } from 'mongoose';
 import { TAGS } from '../constants/tags.js';
 
@@ -26,6 +24,16 @@ const noteSchema = new Schema(
   {
     timestamps: true,
     versionKey: false,
+  },
+);
+
+noteSchema.index(
+  { title: 'text', content: 'text' },
+  {
+    weights: {
+      title: 5,
+      content: 1,
+    },
   },
 );
 
