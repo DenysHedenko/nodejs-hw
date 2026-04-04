@@ -8,6 +8,7 @@ import { connectMongoDB } from './db/connectMongoDB.js';
 import notesRoutes from './routes/notesRoutes.js';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -28,6 +29,9 @@ app.use(cookieParser());
 //* ==========================================================
 // Add groupe of note's routes
 app.use(notesRoutes);
+
+// Add groupe of authentication's routes
+app.use(authRoutes);
 
 // Middleware 404 для неіснуючих маршрутів
 app.use(notFoundHandler);
