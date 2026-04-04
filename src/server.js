@@ -7,6 +7,7 @@ import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { connectMongoDB } from './db/connectMongoDB.js';
 import notesRoutes from './routes/notesRoutes.js';
 import { errors } from 'celebrate';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -20,6 +21,9 @@ app.use(express.json());
 
 // Middleware яка дозволяє робити запити з інших доменів
 app.use(cors());
+
+// Middleware яка дозволяє парсити cookies
+app.use(cookieParser());
 
 //* ==========================================================
 // Add groupe of note's routes
